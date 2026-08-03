@@ -73,7 +73,7 @@ export const DashboardOverview = () => {
         </div>
       )}
       
-      {!loading && !data && (
+      {!loading && (!data || data.matches_analyzed === 0) && (
          <div className="glass-panel text-center py-24 flex flex-col items-center gap-5 animate-fade-in-up">
             <div className="p-4 rounded-full bg-coach-panel border border-coach-hextech/30 shadow-glow-hextech mb-2">
               <RefreshCw size={48} className="text-coach-hextech opacity-90" />
@@ -101,7 +101,7 @@ export const DashboardOverview = () => {
       )}
 
       {/* Contenido Principal (Métricas) */}
-      {data && !loading && (
+      {data && data.matches_analyzed > 0 && !loading && (
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         
         {/* Tarjeta de Rendimiento Principal */}
