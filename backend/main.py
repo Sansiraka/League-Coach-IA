@@ -1,11 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import sync, analytics, coaching
+from db.database import engine, Base
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Crear las tablas en la base de datos si no existen
+    Base.metadata.create_all(bind=engine)
+    yield
 
 app = FastAPI(
     title="League Coach IA API",
     description="Backend para el coach personal de League of Legends",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # CORS configuration
