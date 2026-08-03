@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-coach-dark text-coach-text antialiased selection:bg-coach-hextech selection:text-coach-dark;
+    background-image: radial-gradient(circle at 50% 0%, #091428 0%, #010A13 100%);
+    background-attachment: fixed;
+    background-size: cover;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  /* Panel con Glassmorphism */
+  .glass-panel {
+    @apply bg-coach-panel/40 backdrop-blur-xl border border-white/5 shadow-glass rounded-2xl relative overflow-hidden;
+  }
+  
+  /* Botón con estilo mágico/Hextech */
+  .btn-hextech {
+    @apply relative overflow-hidden bg-coach-panel/50 border border-coach-hextech/50 text-coach-hextech px-5 py-2.5 rounded-lg font-medium transition-all duration-300 hover:shadow-glow-hextech hover:bg-coach-hextech/15 active:scale-95 flex items-center justify-center gap-2;
+  }
+  
+  /* Botón Primario (Call to Action) */
+  .btn-primary {
+    @apply bg-gradient-to-r from-coach-hextech to-coach-accent-blue text-coach-dark px-5 py-2.5 rounded-lg font-bold shadow-glow-hextech transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  /* Badge para estadísticas */
+  .stat-badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-white/5 border border-white/10 flex items-center gap-1.5;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "revisor-clean-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Revisa y comenta este fragmento de mi script.js (lógica de partículas):\n\nfunction updateAndDrawParticles(dt) {\n    for (let i = particles.length - 1; i >= 0; i--) {\n        let p = particles[i];\n        p.x += p.vx;\n        p.y += p.vy;\n        p.life -= dt * 2.5; // fade out speed\n        \n        if (p.life <= 0) {\n            particles.splice(i, 1);\n            continue;\n        }\n        \n        ctx.globalAlpha = p.life;\n        ctx.fillStyle = p.color;\n        ctx.shadowBlur = 10;\n        ctx.shadowColor = p.color;\n        ctx.fillRect(p.x, p.y, p.size, p.size);\n    }\n    ctx.globalAlpha = 1;\n    ctx.shadowBlur = 0;\n}",
+      "expected_output": "Código mantenido por ser óptimo (el bucle inverso con splice es correcto aquí), pero con variables refactorizadas si aplica y agregando comentarios breves en español que expliquen el cálculo de vida, opacidad y el renderizado.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Mejora este bloque de colisiones de mi juego:\n\n// AABB Collision Detection\nif (player.x < obs.x + obs.width &&\n    player.x + player.width > obs.x &&\n    player.y < obs.y + obs.height &&\n    player.y + player.height > obs.y) {\n    \n    // CRASH\n    createParticles(player.x + player.width/2, player.y + player.height/2, player.color, 40, 10);\n    createParticles(obs.x + obs.width/2, obs.y + obs.height/2, obs.color, 40, 10);\n    shakeScreen(0.4);\n    playCrashSound();\n    gameOver();\n    break;\n}",
+      "expected_output": "Condicional extraído a una función explicativa (ej. `hayColision(jugador, obstaculo)`) y comentarios claros en español explicando la detección de cajas delimitadoras (AABB) y las consecuencias del choque.",
+      "files": []
+    }
+  ]
+}

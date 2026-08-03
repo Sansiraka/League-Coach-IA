@@ -1,0 +1,33 @@
+{
+    "grievous_wounds": {
+        "items": [3033, 3123, 3165, 3916, 6304, 3075, 3076, 3123, 6609],
+        "threshold_healing": 15000,
+        "description": "Heridas Graves (Anti-curación)"
+    },
+    "magic_resistance": {
+        "items": [3156, 4401, 4402, 3065, 3193, 2504, 3222, 6664, 2422, 3110, 6653],
+        "threshold_magic_damage_pct": 65,
+        "description": "Resistencia Mágica (Anti-AP)"
+    },
+    "tenacity": {
+        "items": [3111, 3053, 3211, 6692, 2504],
+        "threshold_cc_time_s": 150,
+        "description": "Tenacidad (Anti-CC)"
+    },
+    "armor": {
+        "items": [3047, 3075, 3143, 3110, 3742, 6653],
+        "threshold_physical_damage_pct": 65,
+        "description": "Armadura (Anti-AD)"
+    },
+    "anti_burst": {
+        "items": [3053, 3193, 3026, 3157, 3102],
+        "threshold_single_enemy_team_damage_pct": 40,
+        "description": "Defensa contra Ráfaga (Anti-burst)"
+    },
+    "anti_split_push": {
+        "items": [6696],
+        "summoner_spells": [12],
+        "threshold_turret_damage": 6000,
+        "description": "Contra empuje dividido (Anti Split-Push)"
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "TOP": {
+        "cs_per_min": { "good": 7.0, "great": 8.0 },
+        "vision_per_min": { "good": 0.5, "great": 0.7 },
+        "kill_participation": { "good": 35.0, "great": 45.0 },
+        "gold_diff_15": { "good": 300, "great": 800 },
+        "damage_mitigated": { "good": 20000, "great": 40000 },
+        "turret_plates": { "good": 2, "great": 4 },
+        "vision_wards_bought": { "good": 2, "great": 4 }
+    },
+    "JUNGLE": {
+        "cs_per_min": { "good": 6.0, "great": 7.0 },
+        "vision_per_min": { "good": 1.0, "great": 1.5 },
+        "kill_participation": { "good": 45.0, "great": 55.0 },
+        "cc_time": { "good": 20, "great": 40 },
+        "vision_wards_bought": { "good": 4, "great": 7 },
+        "wards_killed": { "good": 3, "great": 6 }
+    },
+    "MIDDLE": {
+        "cs_per_min": { "good": 7.5, "great": 8.5 },
+        "vision_per_min": { "good": 0.7, "great": 1.0 },
+        "kill_participation": { "good": 45.0, "great": 55.0 },
+        "gold_diff_15": { "good": 300, "great": 800 },
+        "team_damage_percentage": { "good": 25.0, "great": 30.0 },
+        "turret_plates": { "good": 1, "great": 3 },
+        "vision_wards_bought": { "good": 2, "great": 4 }
+    },
+    "BOTTOM": {
+        "cs_per_min": { "good": 8.0, "great": 9.0 },
+        "vision_per_min": { "good": 0.4, "great": 0.6 },
+        "kill_participation": { "good": 45.0, "great": 55.0 },
+        "gold_diff_15": { "good": 300, "great": 800 },
+        "team_damage_percentage": { "good": 25.0, "great": 30.0 },
+        "turret_plates": { "good": 2, "great": 4 },
+        "vision_wards_bought": { "good": 1, "great": 3 }
+    },
+    "UTILITY": {
+        "cs_per_min": { "good": 0.0, "great": 0.0 },
+        "vision_per_min": { "good": 1.5, "great": 2.5 },
+        "kill_participation": { "good": 50.0, "great": 60.0 },
+        "cc_time": { "good": 30, "great": 60 },
+        "heal_shield_effective": { "good": 5000, "great": 10000 },
+        "vision_wards_bought": { "good": 6, "great": 10 },
+        "wards_killed": { "good": 5, "great": 10 }
+    },
+    "UNKNOWN": {
+        "cs_per_min": { "good": 6.0, "great": 7.5 },
+        "vision_per_min": { "good": 0.5, "great": 1.0 },
+        "kill_participation": { "good": 40.0, "great": 50.0 }
+    }
+}
