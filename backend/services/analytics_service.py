@@ -117,16 +117,33 @@ class AnalyticsService:
 
         return role_evaluations
 
-    def _format_recent_matches(self, recent_metrics: List[PlayerMatchMetrics]) -> List[Dict[str, Any]]:
+    def _format_recent_matches(self, recent_data: List[tuple], puuid: str) -> List[Dict[str, Any]]:
         """
-        Formatea y extrae los datos de las partidas recientes para incluir en el resumen final.
+        Formatea y extrae los datos de las partidas recientes incluyendo KDA y fecha extraídos del JSON crudo.
         """
-        return [
-            {
+        formatted = []
+        for m, match_obj in recent_data:
+            kills, deaths, assists = 0, 0, 0
+            game_creation = match_obj.game_creation.isoformat() if match_obj.game_creation else None
+            
+            # Extraer KDA del raw_match_json
+            if match_obj.raw_match_json and "info" in match_obj.raw_match_json:
+                participants = match_obj.raw_match_json["info"].get("participants", [])
+                p_data = next((p for p in participants if p.get("puuid") == puuid), None)
+                if p_data:
+                    kills = p_data.get("kills", 0)
+                    deaths = p_data.get("deaths", 0)
+                    assists = p_data.get("assists", 0)
+            
+            formatted.append({
                 "match_id": m.match_id,
                 "champion": m.champion,
                 "role": m.role,
                 "win": m.win,
+                "game_creation": game_creation,
+                "kills": kills,
+                "deaths": deaths,
+                "assists": assists,
                 "deaths_before_objectives": m.deaths_before_objectives,
                 "gold_diff_10": m.gold_diff_10,
                 "gold_diff_15": m.gold_diff_15,
@@ -153,8 +170,8 @@ class AnalyticsService:
                 "epic_monster_kills_near_enemy_jungler": m.epic_monster_kills_near_enemy_jungler,
                 "scuttle_crab_kills": m.scuttle_crab_kills,
                 "ward_takedowns_before_20m": m.ward_takedowns_before_20m
-            } for m in recent_metrics
-        ]
+            })
+        return formatted
 
     def get_summary(self, game_name: str, tag_line: str, limit: int = 20) -> Dict[str, Any]:
         """
@@ -166,20 +183,23 @@ class AnalyticsService:
 
         self.process_unprocessed_matches(player)
 
-        recent_metrics = self.db.query(PlayerMatchMetrics)\
+        recent_data = self.db.query(PlayerMatchMetrics, Match)\
+            .join(Match, PlayerMatchMetrics.match_id == Match.match_id)\
             .filter(PlayerMatchMetrics.player_id == player.id)\
             .order_by(desc(PlayerMatchMetrics.created_at))\
             .limit(limit)\
             .all()
 
-        if not recent_metrics:
+        if not recent_data:
             return {"message": "No metrics available", "matches_analyzed": 0}
+            
+        recent_metrics = [m[0] for m in recent_data]
 
         count = len(recent_metrics)
         global_averages = self._calculate_global_averages(recent_metrics, count)
         situational_errors = self._calculate_situational_errors(recent_metrics)
         role_evaluations = self._evaluate_roles(recent_metrics)
-        formatted_matches = self._format_recent_matches(recent_metrics)
+        formatted_matches = self._format_recent_matches(recent_data, player.puuid)
 
         summary_data = {
             "player": f"{game_name}#{tag_line}",
@@ -200,3 +220,56 @@ class AnalyticsService:
         
         
         return summary_data
+
+    def get_match_details(self, match_id: str) -> Dict[str, Any]:
+        """
+        Extrae y formatea los detalles completos de una partida para el scoreboard (10 jugadores, equipos y objetivos).
+        """
+        match_obj = self.db.query(Match).filter(Match.match_id == match_id).first()
+        if not match_obj or not match_obj.raw_match_json:
+            raise HTTPException(status_code=404, detail="Match not found or raw data missing")
+
+        info = match_obj.raw_match_json.get("info", {})
+        
+        teams_data = {}
+        for team in info.get("teams", []):
+            teams_data[team["teamId"]] = {
+                "teamId": team["teamId"],
+                "win": team.get("win", False),
+                "objectives": team.get("objectives", {})
+            }
+
+        participants_data = []
+        for p in info.get("participants", []):
+            participants_data.append({
+                "puuid": p.get("puuid"),
+                "riotIdGameName": p.get("riotIdGameName") or p.get("summonerName", "Unknown"),
+                "riotIdTagline": p.get("riotIdTagline", ""),
+                "championName": p.get("championName"),
+                "teamId": p.get("teamId"),
+                "role": p.get("teamPosition") or p.get("role", "UNKNOWN"),
+                "kills": p.get("kills", 0),
+                "deaths": p.get("deaths", 0),
+                "assists": p.get("assists", 0),
+                "totalDamageDealtToChampions": p.get("totalDamageDealtToChampions", 0),
+                "goldEarned": p.get("goldEarned", 0),
+                "champLevel": p.get("champLevel", 0),
+                "totalMinionsKilled": p.get("totalMinionsKilled", 0) + p.get("neutralMinionsKilled", 0),
+                "visionScore": p.get("visionScore", 0),
+                "dragonKills": p.get("dragonKills", 0),
+                "baronKills": p.get("baronKills", 0),
+                "turretKills": p.get("turretKills", 0),
+                "inhibitorKills": p.get("inhibitorKills", 0),
+                "items": [
+                    p.get("item0", 0), p.get("item1", 0), p.get("item2", 0),
+                    p.get("item3", 0), p.get("item4", 0), p.get("item5", 0), p.get("item6", 0)
+                ]
+            })
+
+        return {
+            "match_id": match_id,
+            "game_creation": info.get("gameCreation"),
+            "game_duration": info.get("gameDuration"),
+            "teams": list(teams_data.values()),
+            "participants": participants_data
+        }

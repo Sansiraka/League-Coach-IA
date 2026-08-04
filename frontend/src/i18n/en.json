@@ -47,7 +47,10 @@
     "goldDiffTitle": "Gold Difference vs Opponent",
     "situationalChecks": "Situational Checks",
     "noThreats": "No situational threats detected.",
-    "errorFetch": "Error fetching matches."
+    "errorFetch": "Error fetching matches.",
+    "blueTeam": "Blue Team",
+    "redTeam": "Red Team",
+    "scoreboardTitle": "Match Scoreboard"
   },
   "analysis": {
     "title": "AI Coach Analysis",

@@ -14,3 +14,11 @@ def get_analytics_summary(
 ):
     service = AnalyticsService(db)
     return service.get_summary(game_name, tag_line, limit)
+
+@router.get("/match/{match_id}")
+def get_match_details(
+    match_id: str,
+    db: Session = Depends(get_db)
+):
+    service = AnalyticsService(db)
+    return service.get_match_details(match_id)

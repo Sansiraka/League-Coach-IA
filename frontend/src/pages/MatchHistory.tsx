@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { AlertCircle, Search, History, Swords, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useMatchHistory } from '../hooks/useMatchHistory';
+import { MatchScoreboard } from '../components/MatchScoreboard';
 
 /**
  * Componente que muestra el historial de partidas del jugador y detalles con gráficas.
@@ -108,6 +109,9 @@ export const MatchHistory = () => {
           ];
 
           const isExpanded = expandedMatches[match.match_id] || false;
+          
+          const matchDate = match.game_creation ? new Date(match.game_creation).toLocaleDateString() : '';
+          const kdaRatio = match.deaths === 0 ? 'Perfect' : ((match.kills + match.assists) / match.deaths).toFixed(2);
 
           return (
             <div key={match.match_id} className="glass-panel relative overflow-hidden group transition-all duration-300">
@@ -127,6 +131,10 @@ export const MatchHistory = () => {
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-coach-muted">{match.role}</span>
                       <span className="text-coach-muted/50">•</span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-white/5 border border-white/10 text-white/80">
+                        {matchDate}
+                      </span>
+                      <span className="text-coach-muted/50">•</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${match.win ? 'bg-coach-accent-green/20 text-coach-accent-green' : 'bg-coach-accent-red/20 text-coach-accent-red'}`}>
                         {match.win ? t('matches.victory') : t('matches.defeat')}
                       </span>
@@ -135,6 +143,13 @@ export const MatchHistory = () => {
                 </div>
                 
                 <div className="flex items-center gap-6">
+                  <div className="flex flex-col items-end mr-2">
+                    <p className="text-[10px] font-bold text-coach-muted uppercase tracking-widest">K / D / A</p>
+                    <p className="font-display font-bold text-base text-white">
+                      {match.kills} <span className="text-coach-muted/50 font-sans mx-1">/</span> {match.deaths} <span className="text-coach-muted/50 font-sans mx-1">/</span> {match.assists}
+                    </p>
+                    <p className="text-[10px] font-semibold text-coach-hextech">{kdaRatio} KDA</p>
+                  </div>
                   <div className="flex gap-6 text-right bg-black/20 px-4 py-2 rounded-xl border border-white/5">
                     <div>
                       <p className="text-[9px] font-bold text-coach-muted uppercase tracking-widest">{t('matches.visionMin')}</p>
@@ -224,6 +239,10 @@ export const MatchHistory = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Scoreboard Table */}
+                  <MatchScoreboard matchId={match.match_id} />
+
                 </div>
               )}
             </div>

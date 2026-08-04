@@ -100,7 +100,7 @@ export const AiAnalysis = () => {
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-coach-hextech/5 rounded-full blur-3xl transition-transform duration-700 group-hover:scale-150"></div>
             <p className="text-xl md:text-2xl leading-relaxed text-white font-display font-medium relative z-10 drop-shadow-sm">
               <span className="text-coach-hextech text-3xl font-serif mr-2">"</span>
-              {data.analysis.summary}
+              {data.analysis?.summary || t('analysis.generating', 'Generando resumen...')}
               <span className="text-coach-hextech text-3xl font-serif ml-2">"</span>
             </p>
           </div>
@@ -116,7 +116,7 @@ export const AiAnalysis = () => {
                 {t('analysis.strengths', 'Strengths & Achievements')}
               </h2>
               <div className="space-y-4 flex-1">
-                {data.analysis.strengths.map((s: any, idx: number) => {
+                {(data.analysis?.strengths || []).map((s: any, idx: number) => {
                   
                   // Asignación de estilos dinámicos para los nuevos perfiles Macro
                   let icon = <CheckCircle2 size={20} />;
@@ -124,7 +124,7 @@ export const AiAnalysis = () => {
                   let borderHoverClass = "hover:border-coach-accent-green/50";
                   let bgHoverClass = "group-hover:bg-coach-accent-green/10";
                   
-                  const claimLower = s.claim.toLowerCase();
+                  const claimLower = (s?.claim || "").toLowerCase();
                   if (claimLower.includes("tyrant") || claimLower.includes("línea") || claimLower.includes("lane")) {
                      icon = <Target size={20} />;
                      colorClass = "text-coach-accent-red";
@@ -155,13 +155,16 @@ export const AiAnalysis = () => {
                          <div className={`p-1.5 rounded-lg bg-white/5 ${bgHoverClass} ${colorClass} transition-colors`}>
                            {icon}
                          </div>
-                         <h3 className={`font-bold text-white text-lg group-hover:${colorClass} transition-colors`}>{s.claim}</h3>
+                         <h3 className={`font-bold text-white text-lg group-hover:${colorClass} transition-colors`}>{s?.claim || "Fortaleza detectada"}</h3>
                       </div>
                       
-                      <p className="text-coach-muted leading-relaxed pl-10 relative z-10">{s.evidence}</p>
+                      <p className="text-coach-muted leading-relaxed pl-10 relative z-10">{s?.evidence || ""}</p>
                     </div>
                   );
                 })}
+                {!(data.analysis?.strengths?.length > 0) && (
+                   <p className="text-coach-muted italic">No se detectaron fortalezas resaltables en estas partidas.</p>
+                )}
               </div>
             </div>
 
@@ -175,28 +178,31 @@ export const AiAnalysis = () => {
                 {t('analysis.priorities', 'Top Priorities')}
               </h2>
               <div className="space-y-5 flex-1">
-                {data.analysis.priorities.map((p: any, idx: number) => (
+                {(data.analysis?.priorities || []).map((p: any, idx: number) => (
                   <div key={idx} className="bg-coach-dark/60 p-5 rounded-xl border border-coach-accent-red/20 border-l-4 border-l-coach-accent-red hover:bg-coach-accent-red/5 transition-colors relative overflow-hidden">
                     <div className="flex justify-between items-start mb-3 gap-4">
-                      <h3 className="font-bold text-white text-lg">{p.title}</h3>
+                      <h3 className="font-bold text-white text-lg">{p?.title || "Prioridad a mejorar"}</h3>
                       <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-coach-accent-red/20 rounded text-coach-accent-red shrink-0">
-                        {p.confidence}
+                        {p?.confidence || "HIGH"}
                       </span>
                     </div>
-                    <p className="text-coach-muted/90 mb-4 leading-relaxed">{p.evidence}</p>
+                    <p className="text-coach-muted/90 mb-4 leading-relaxed">{p?.evidence || ""}</p>
                     
                     <div className="bg-black/30 rounded-lg p-4 space-y-2 border border-white/5">
                       <div className="text-sm flex items-start gap-2">
                         <span className="font-semibold text-coach-hextech min-w-[70px] uppercase tracking-wider text-[10px] mt-1">{t('analysis.action', 'Action:')}</span> 
-                        <span className="text-white/90">{p.action}</span>
+                        <span className="text-white/90">{p?.action || "Revisa tus repeticiones para corregir esto."}</span>
                       </div>
                       <div className="text-sm flex items-start gap-2">
                         <span className="font-semibold text-coach-accent-green min-w-[70px] uppercase tracking-wider text-[10px] mt-1">{t('analysis.metric', 'Metric:')}</span> 
-                        <span className="text-white/90">{p.success_metric}</span>
+                        <span className="text-white/90">{p?.success_metric || "-"}</span>
                       </div>
                     </div>
                   </div>
                 ))}
+                {!(data.analysis?.priorities?.length > 0) && (
+                   <p className="text-coach-muted italic">No se detectaron prioridades urgentes.</p>
+                )}
               </div>
             </div>
           </div>
@@ -210,7 +216,7 @@ export const AiAnalysis = () => {
               {t('analysis.nextSession', 'Next Session Plan')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {data.analysis.next_session_plan.map((item: string, idx: number) => (
+              {(data.analysis?.next_session_plan || []).map((item: string, idx: number) => (
                 <div key={idx} className="bg-white/5 p-6 rounded-xl border border-white/5 hover:border-coach-gold/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
                   <div className="absolute -right-4 -top-4 w-16 h-16 bg-coach-gold/10 rounded-full blur-xl group-hover:bg-coach-gold/20 transition-all"></div>
                   <span className="text-5xl font-display font-black text-white/5 absolute bottom-2 right-4 group-hover:text-coach-gold/10 transition-colors">

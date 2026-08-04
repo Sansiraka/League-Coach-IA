@@ -32,11 +32,21 @@ def generate_coaching(
     insight = llm_svc.generate_coaching_insight(str(player.id), summary, past_insights=past_insights)
 
     import json
+    import re
     
     try:
-        analysis_data = json.loads(insight.generated_analysis)
+        raw = insight.generated_analysis.strip()
+        # Eliminar formato markdown ```json y ``` si el modelo los añade
+        if raw.startswith("```"):
+            # Encontrar el primer { o [ para empezar a parsear
+            start = raw.find("{")
+            end = raw.rfind("}")
+            if start != -1 and end != -1:
+                raw = raw[start:end+1]
+        
+        analysis_data = json.loads(raw)
     except Exception:
-        analysis_data = {"summary": "Error parsing JSON", "strengths": [], "priorities": [], "next_session_plan": []}
+        analysis_data = {"summary": "Hubo un error interpretando los datos del Coach IA. Genera de nuevo.", "strengths": [], "priorities": [], "next_session_plan": []}
 
     return {
         "insight_id": insight.id,

@@ -27,6 +27,10 @@ export interface MatchDetail {
   champion: string;
   role: string;
   win: boolean;
+  game_creation: string | null;
+  kills: number;
+  deaths: number;
+  assists: number;
   deaths_before_objectives: number;
   gold_diff_10: number;
   gold_diff_15: number;
@@ -42,6 +46,42 @@ export interface MatchDetail {
   vision_score_advantage: number;
   support_cs_alert: string | null;
   situational_analysis_json: Record<string, any>;
+}
+
+export interface MatchScoreboardData {
+  match_id: string;
+  game_creation: number;
+  game_duration: number;
+  teams: TeamData[];
+  participants: ParticipantData[];
+}
+
+export interface TeamData {
+  teamId: number;
+  win: boolean;
+  objectives: Record<string, any>;
+}
+
+export interface ParticipantData {
+  puuid: string;
+  riotIdGameName: string;
+  riotIdTagline: string;
+  championName: string;
+  teamId: number;
+  role: string;
+  kills: number;
+  deaths: number;
+  assists: number;
+  totalDamageDealtToChampions: number;
+  goldEarned: number;
+  champLevel: number;
+  totalMinionsKilled: number;
+  visionScore: number;
+  dragonKills: number;
+  baronKills: number;
+  turretKills: number;
+  inhibitorKills: number;
+  items: number[];
 }
 
 /**

@@ -47,7 +47,10 @@
     "goldDiffTitle": "Diferencia de Oro vs Oponente",
     "situationalChecks": "Controles Situacionales",
     "noThreats": "No se detectaron amenazas situacionales.",
-    "errorFetch": "Error obteniendo las partidas."
+    "errorFetch": "Error obteniendo las partidas.",
+    "blueTeam": "Equipo Azul",
+    "redTeam": "Equipo Rojo",
+    "scoreboardTitle": "Scoreboard de la Partida"
   },
   "analysis": {
     "title": "Análisis del Coach IA",

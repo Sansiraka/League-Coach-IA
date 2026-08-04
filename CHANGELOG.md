@@ -8,7 +8,14 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 - **Extracción de Fortalezas (Highlights & Benchmarks):** El `PriorityEngine` ahora identifica y recompensa matemáticamente logros destacables del jugador (ej. robos épicos, aliados salvados, outplays, esquives de skillshots).
 - **Inyección de `top_strengths` a Groq:** El LLM ahora recibe un Top 3 de los mejores aciertos del jugador para generar retroalimentación positiva precisa basada en datos reales (eliminando alucinaciones sobre el desempeño positivo).
 - **Evaluación Táctica y Macro Estratégica:** Se incorporaron perfiles avanzados evaluando las últimas partidas (`Lane Tyrant`, `Macro God`, `Vision Control`, `Jungle Mastery`) para brindar feedback sobre la toma de decisiones y no solo las mecánicas puras.
+- **Scoreboard de Partida (End Game Screen):** Implementación de una tabla detallada Premium Hextech Glassmorphism por cada partida expandida (`MatchScoreboard.tsx`), mostrando estadísticas completas de los 10 jugadores (KDA, Daño, Oro, CS) y los objetivos conseguidos por cada equipo (Dragones, Barones, Torres).
+- **Nuevo Endpoint Analítico:** Ruta agregada al backend (`GET /analytics/match/{match_id}`) para extraer estructuradamente la información de los participantes y equipos desde el JSON crudo de Riot Games.
+- **Vista de Historial Mejorada:** La vista comprimida de la partida ahora exhibe la Fecha del encuentro, K/D/A exacto y el Ratio KDA directamente en la cabecera del acordeón.
+
+### 🛠 Arreglado (Fixed)
 - **Bugfix (Analytics Service):** Solucionada una falla crítica en la inyección de las variables maestras y eventos (outplays, dodges, ventaja de nivel) hacia el Motor de Prioridades, lo que antes causaba que no se detectaran fortalezas de las partidas procesadas.
+- **Prevención de Pantalla Negra (White Screen of Death):** La sección "Análisis IA" ya no colapsa en el Frontend cuando la IA (Groq/Llama 3) omite propiedades. Se implementaron validaciones de Optional Chaining y Fallbacks (`|| []`).
+- **Sanitización de LLM (Markdown Hallucinations):** El Backend ahora limpia los JSON de Groq vía Regex antes del parseo, eliminando la envoltura ````json ```` cuando el modelo alucina en formato de texto.
 
 ## [1.0.0] - 2026-08-03
 

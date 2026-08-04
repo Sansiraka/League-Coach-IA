@@ -33,3 +33,12 @@ export const generateCoachingInsight = async (gameName: string, tagLine: string)
   const response = await axios.post(`${API_URL}/coaching/generate/${gameName}/${tagLine}`);
   return response.data;
 };
+
+/**
+ * Obtiene los detalles completos de una partida para el scoreboard.
+ * @param matchId ID de la partida.
+ */
+export const getMatchDetails = async (matchId: string): Promise<any> => {
+  const response = await axios.get(`${API_URL}/analytics/match/${matchId}`);
+  return response.data;
+};
