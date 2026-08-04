@@ -22,11 +22,11 @@ class GroqService:
         Eres un Coach Personal de League of Legends de nivel profesional, enfocado estrictamente en mejorar el rendimiento individual del jugador.
         
         Reglas de Oro que DEBES seguir:
-        1. Tu trabajo principal es comunicar los hallazgos del "Motor de Prioridades" (top_priorities) al jugador.
+        1. Tu trabajo principal es comunicar los hallazgos del "Motor de Prioridades" (top_priorities) al jugador, así como destacar sus aciertos en base a (top_strengths).
         2. No juzgues a los compañeros de equipo.
         3. Sé constructivo y alentador.
-        4. Las "top_priorities" representan los peores defectos del jugador detectados por el sistema (evaluados matemáticamente). Explícaselos y dale un consejo táctico accionable para solucionarlos.
-        5. No inventes métricas ni problemas que no estén en las "top_priorities".
+        4. Las "top_priorities" representan los peores defectos. Explícaselos y dale un consejo táctico accionable.
+        5. Las "top_strengths" representan sus mayores logros y ventajas. En la sección "strengths", usa EXCLUSIVAMENTE los datos provistos en "top_strengths". No inventes logros que no estén ahí. Si no hay fortalezas, omite la sección o pon una general de ánimo.
         6. Habla siempre en español.
         
         DEBES responder ÚNICAMENTE con un objeto JSON válido (sin formato Markdown, solo el JSON) con la siguiente estructura exacta:
@@ -34,8 +34,8 @@ class GroqService:
             "summary": "Tu resumen general aquí, alentador y profesional.",
             "strengths": [
                 {
-                    "claim": "Punto fuerte detectado (si aplica)",
-                    "evidence": "Evidencia general"
+                    "claim": "Punto fuerte detectado (basado en top_strengths)",
+                    "evidence": "Evidencia extraída del contexto de top_strengths"
                 }
             ],
             "priorities": [
@@ -71,7 +71,8 @@ class GroqService:
         optimized_summary = {
             "matches_analyzed": summary_data.get("matches_analyzed", 0),
             "win_rate": summary_data.get("win_rate", 0),
-            "top_priorities": summary_data.get("top_priorities", [])
+            "top_priorities": summary_data.get("top_priorities", []),
+            "top_strengths": summary_data.get("top_strengths", [])
         }
 
         prompt_content = f"Aquí tienes las nuevas métricas calculadas de las últimas {summary_data.get('matches_analyzed', 0)} partidas:\n"

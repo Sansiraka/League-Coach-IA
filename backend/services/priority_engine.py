@@ -185,3 +185,98 @@ class PriorityEngine:
         issues.sort(key=lambda x: x["severity"], reverse=True)
         
         return issues[:3]
+
+    def _evaluate_highlight_strengths(self, summary_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Evalúa y premia jugadas destacadas (highlights) a lo largo de las partidas recientes.
+        """
+        strengths = []
+        recent_matches = summary_data.get("recent_matches", [])
+        
+        total_saves = sum(m.get("save_ally_from_death", 0) or 0 for m in recent_matches)
+        total_steals = sum(m.get("epic_monster_steals", 0) or 0 for m in recent_matches)
+        total_outplays = sum(m.get("outnumbered_kills", 0) or 0 for m in recent_matches)
+        total_dodges = sum(m.get("skillshots_dodged", 0) or 0 for m in recent_matches)
+
+        if total_saves > 0:
+            strengths.append({
+                "topic": "support_savior",
+                "impact": total_saves * abs(self.weights.get("SUPPORT_SAVIOR", -25)),
+                "context": f"Salvaste a aliados de una muerte segura en {total_saves} ocasiones."
+            })
+            
+        if total_steals > 0:
+            strengths.append({
+                "topic": "epic_steals",
+                "impact": total_steals * abs(self.weights.get("OUTPLAY", -15)) * 1.5,
+                "context": f"Robaste {total_steals} monstruos épicos al equipo rival."
+            })
+            
+        if total_outplays > 0:
+            strengths.append({
+                "topic": "outplays",
+                "impact": total_outplays * abs(self.weights.get("OUTPLAY", -15)),
+                "context": f"Lograste {total_outplays} asesinatos en inferioridad numérica."
+            })
+
+        if total_dodges > 10:
+            strengths.append({
+                "topic": "mechanical_god",
+                "impact": (total_dodges // 5) * abs(self.weights.get("MECHANICAL_GOD", -20)),
+                "context": f"Esquivaste {total_dodges} habilidades clave, mostrando grandes mecánicas."
+            })
+
+        return strengths
+
+    def _evaluate_benchmark_strengths(self, summary_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Evalúa y premia métricas de rol que hayan superado el estándar.
+        """
+        strengths = []
+        evaluations = summary_data.get("role_evaluations", {})
+        
+        for role, data in evaluations.items():
+            evals = data.get("evaluation", {})
+            role_key = role.upper() if role else "UNKNOWN"
+            base_weights = self.role_weights.get(role_key, self.role_weights["UNKNOWN"])
+            
+            cs_weight = base_weights.get("cs_per_min", 0) * self._calculateRoleModifier(summary_data, role, "cs_per_min")
+            vision_weight = base_weights.get("vision_per_min", 0) * self._calculateRoleModifier(summary_data, role, "vision_per_min")
+            kp_weight = base_weights.get("kill_participation", 0) * self._calculateRoleModifier(summary_data, role, "kill_participation")
+            
+            if evals.get("cs_per_min", {}).get("verdict") == "ABOVE_STANDARD":
+                strengths.append({
+                    "topic": f"high_cs_{role}",
+                    "impact": cs_weight * 1.5,
+                    "context": f"Tu farmeo (CS/min) jugando como {role} está por encima del estándar esperado."
+                })
+                
+            if evals.get("vision_per_min", {}).get("verdict") == "ABOVE_STANDARD":
+                strengths.append({
+                    "topic": f"high_vision_{role}",
+                    "impact": vision_weight * 1.5,
+                    "context": f"Lograste un excelente control de visión aportando al equipo jugando como {role}."
+                })
+                
+            if evals.get("kill_participation", {}).get("verdict") == "ABOVE_STANDARD":
+                strengths.append({
+                    "topic": f"high_kp_{role}",
+                    "impact": kp_weight * 1.5,
+                    "context": f"Tuviste un alto impacto en peleas y rotaciones (Kill Participation) jugando como {role}."
+                })
+        return strengths
+
+    def evaluate_player_strengths(self, summary_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Analiza el resumen de datos del jugador, consolida logros y fortalezas destacadas,
+        y retorna el Top 3 para alimentar el feedback positivo del LLM.
+        """
+        strengths = []
+        
+        strengths.extend(self._evaluate_highlight_strengths(summary_data))
+        strengths.extend(self._evaluate_benchmark_strengths(summary_data))
+        
+        strengths = [s for s in strengths if s["impact"] > 0]
+        strengths.sort(key=lambda x: x["impact"], reverse=True)
+        
+        return strengths[:3]

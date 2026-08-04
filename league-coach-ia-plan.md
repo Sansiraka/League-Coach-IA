@@ -65,7 +65,7 @@ Backend FastAPI (Python) (Refactorizado Clean Code)
           |
           +-- Riot API: cuenta, historial, detalles y timelines
           +-- Motor de métricas (MetricsEngine) y detección de patrones
-          +-- Motor de Prioridades (PriorityEngine): Filtra los 3 peores errores por rol
+          +-- Motor de Prioridades (PriorityEngine): Filtra los 3 peores errores y los 3 mejores aciertos (fortalezas) por rol
           +-- PostgreSQL: perfil, partidas, métricas, insights y feedback
           +-- Groq API (Llama 3.1): explicación estructurada de la evidencia
 ```
@@ -128,7 +128,8 @@ Groq recibirá un paquete JSON pequeño y validado, no los datos completos sin p
   },
   "sample": {"matches": 20, "period": "2026-07-01 a 2026-07-16"},
   "metrics": {},
-  "patterns": [],
+  "top_priorities": [],
+  "top_strengths": [],
   "recent_matches": []
 }
 ```

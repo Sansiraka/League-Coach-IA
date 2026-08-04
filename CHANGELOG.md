@@ -2,6 +2,12 @@
 
 Todos los cambios notables de este proyecto serán documentados en este archivo.
 
+## [1.1.0] - 2026-08-04
+
+### 🚀 Añadido (Added)
+- **Extracción de Fortalezas (Highlights & Benchmarks):** El `PriorityEngine` ahora identifica y recompensa matemáticamente logros destacables del jugador (ej. robos épicos, aliados salvados, outplays, esquives de skillshots).
+- **Inyección de `top_strengths` a Groq:** El LLM ahora recibe un Top 3 de los mejores aciertos del jugador para generar retroalimentación positiva precisa basada en datos reales (eliminando alucinaciones sobre el desempeño positivo).
+
 ## [1.0.0] - 2026-08-03
 
 ### 🚀 Añadido (Added)

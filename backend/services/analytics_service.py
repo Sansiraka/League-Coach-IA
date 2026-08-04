@@ -185,5 +185,7 @@ class AnalyticsService:
         
         priority_engine = PriorityEngine()
         summary_data["top_priorities"] = priority_engine.evaluate_player_issues(summary_data)
+        summary_data["top_strengths"] = priority_engine.evaluate_player_strengths(summary_data)
+        
         
         return summary_data
