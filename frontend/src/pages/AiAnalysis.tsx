@@ -113,15 +113,55 @@ export const AiAnalysis = () => {
                 <div className="p-1.5 bg-coach-accent-green/20 rounded-lg">
                   <CheckCircle2 size={24} />
                 </div>
-                {t('analysis.strengths', 'Strengths')}
+                {t('analysis.strengths', 'Strengths & Achievements')}
               </h2>
               <div className="space-y-4 flex-1">
-                {data.analysis.strengths.map((s: any, idx: number) => (
-                  <div key={idx} className="bg-white/5 p-5 rounded-xl border border-white/5 hover:border-coach-accent-green/30 transition-colors group">
-                    <h3 className="font-bold text-white mb-2 text-lg group-hover:text-coach-accent-green transition-colors">{s.claim}</h3>
-                    <p className="text-coach-muted leading-relaxed">{s.evidence}</p>
-                  </div>
-                ))}
+                {data.analysis.strengths.map((s: any, idx: number) => {
+                  
+                  // Asignación de estilos dinámicos para los nuevos perfiles Macro
+                  let icon = <CheckCircle2 size={20} />;
+                  let colorClass = "text-coach-accent-green";
+                  let borderHoverClass = "hover:border-coach-accent-green/50";
+                  let bgHoverClass = "group-hover:bg-coach-accent-green/10";
+                  
+                  const claimLower = s.claim.toLowerCase();
+                  if (claimLower.includes("tyrant") || claimLower.includes("línea") || claimLower.includes("lane")) {
+                     icon = <Target size={20} />;
+                     colorClass = "text-coach-accent-red";
+                     borderHoverClass = "hover:border-coach-accent-red/50";
+                     bgHoverClass = "group-hover:bg-coach-accent-red/10";
+                  } else if (claimLower.includes("macro") || claimLower.includes("dios") || claimLower.includes("god")) {
+                     icon = <BrainCircuit size={20} />;
+                     colorClass = "text-coach-hextech";
+                     borderHoverClass = "hover:border-coach-hextech/50";
+                     bgHoverClass = "group-hover:bg-coach-hextech/10";
+                  } else if (claimLower.includes("vision") || claimLower.includes("visión")) {
+                     icon = <Lightbulb size={20} />;
+                     colorClass = "text-coach-accent-blue";
+                     borderHoverClass = "hover:border-coach-accent-blue/50";
+                     bgHoverClass = "group-hover:bg-coach-accent-blue/10";
+                  } else if (claimLower.includes("mechanic") || claimLower.includes("mecánica") || claimLower.includes("outplay") || claimLower.includes("esquive")) {
+                     icon = <Zap size={20} />;
+                     colorClass = "text-coach-gold";
+                     borderHoverClass = "hover:border-coach-gold/50";
+                     bgHoverClass = "group-hover:bg-coach-gold/10";
+                  }
+
+                  return (
+                    <div key={idx} className={`bg-white/5 p-5 rounded-xl border border-white/5 transition-colors group relative overflow-hidden ${borderHoverClass}`}>
+                      <div className={`absolute -right-4 -top-4 w-16 h-16 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity ${colorClass.replace('text-', 'bg-')}/20`}></div>
+                      
+                      <div className="flex items-center gap-3 mb-2 relative z-10">
+                         <div className={`p-1.5 rounded-lg bg-white/5 ${bgHoverClass} ${colorClass} transition-colors`}>
+                           {icon}
+                         </div>
+                         <h3 className={`font-bold text-white text-lg group-hover:${colorClass} transition-colors`}>{s.claim}</h3>
+                      </div>
+                      
+                      <p className="text-coach-muted leading-relaxed pl-10 relative z-10">{s.evidence}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
