@@ -188,16 +188,87 @@ class PriorityEngine:
 
     def _evaluate_highlight_strengths(self, summary_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Evalúa y premia jugadas destacadas (highlights) a lo largo de las partidas recientes.
+        Evalúa y premia jugadas destacadas (highlights) y macroestrategia a lo largo de las partidas recientes.
         """
         strengths = []
         recent_matches = summary_data.get("recent_matches", [])
         
-        total_saves = sum(m.get("save_ally_from_death", 0) or 0 for m in recent_matches)
-        total_steals = sum(m.get("epic_monster_steals", 0) or 0 for m in recent_matches)
-        total_outplays = sum(m.get("outnumbered_kills", 0) or 0 for m in recent_matches)
-        total_dodges = sum(m.get("skillshots_dodged", 0) or 0 for m in recent_matches)
+        if not recent_matches:
+            return strengths
+            
+        lane_tyrant_score = 0
+        macro_god_score = 0
+        jungle_mastery_score = 0
+        vision_control_score = 0
+        
+        # Outplays and mechanics
+        total_saves = 0
+        total_steals = 0
+        total_outplays = 0
+        total_dodges = 0
 
+        for m in recent_matches:
+            # 1. Lane Tyrant
+            cs_adv = m.get("max_cs_advantage_on_lane_opponent", 0) or 0
+            lvl_adv = m.get("max_level_lead_lane_opponent", 0) or 0
+            lane_cs_10 = m.get("lane_minions_first_10_minutes", 0) or 0
+            if cs_adv >= 20 or lvl_adv >= 2 or lane_cs_10 >= 75:
+                lane_tyrant_score += 1
+                
+            # 2. Macro God
+            plates = m.get("turret_plates", 0) or 0
+            gold_15 = m.get("gold_diff_15", 0) or 0
+            dives = m.get("kills_near_enemy_turret", 0) or 0
+            if plates >= 3 or gold_15 >= 750 or dives >= 3:
+                macro_god_score += 1
+                
+            # 3. Jungle Mastery
+            if m.get("role") == "JUNGLE":
+                epic_secure = m.get("epic_monster_kills_near_enemy_jungler", 0) or 0
+                scuttles = m.get("scuttle_crab_kills", 0) or 0
+                if epic_secure >= 1 or scuttles >= 2:
+                    jungle_mastery_score += 1
+                    
+            # 4. Vision Control
+            ward_takedowns = m.get("ward_takedowns_before_20m", 0) or 0
+            if ward_takedowns >= 3:
+                vision_control_score += 1
+                
+            # Acumular highlights mecánicos
+            total_saves += m.get("save_ally_from_death", 0) or 0
+            total_steals += m.get("epic_monster_steals", 0) or 0
+            total_outplays += m.get("outnumbered_kills", 0) or 0
+            total_dodges += m.get("skillshots_dodged", 0) or 0
+
+        if lane_tyrant_score > 0:
+            strengths.append({
+                "topic": "lane_tyrant",
+                "impact": lane_tyrant_score * 30, # Usando el peso absoluto de LANE_DOMINATED
+                "context": f"Aplastaste tu línea (gran ventaja de farmeo o nivel) en {lane_tyrant_score} partidas recientes."
+            })
+            
+        if macro_god_score > 0:
+            strengths.append({
+                "topic": "macro_god",
+                "impact": macro_god_score * 25,
+                "context": f"Demostraste excelente macrojuego (placas, asedios, ventaja de oro temprana) en {macro_god_score} partidas."
+            })
+            
+        if jungle_mastery_score > 0:
+            strengths.append({
+                "topic": "jungle_mastery",
+                "impact": jungle_mastery_score * 30, # Usando JUNGLE_DOMINATED
+                "context": f"Aseguraste objetivos bajo presión y controlaste el río en {jungle_mastery_score} partidas como Jungla."
+            })
+            
+        if vision_control_score > 0:
+            strengths.append({
+                "topic": "vision_control",
+                "impact": vision_control_score * 25,
+                "context": f"Denegaste visión enemiga de forma constante en juego temprano en {vision_control_score} partidas."
+            })
+
+        # Preservar los highlights mecánicos
         if total_saves > 0:
             strengths.append({
                 "topic": "support_savior",
@@ -222,7 +293,7 @@ class PriorityEngine:
         if total_dodges > 10:
             strengths.append({
                 "topic": "mechanical_god",
-                "impact": (total_dodges // 5) * abs(self.weights.get("MECHANICAL_GOD", -20)),
+                "impact": (total_dodges // 10) * abs(self.weights.get("MECHANICAL_GOD", -20)), # Dividimos por 10 para balancear si el jugador esquiva miles
                 "context": f"Esquivaste {total_dodges} habilidades clave, mostrando grandes mecánicas."
             })
 

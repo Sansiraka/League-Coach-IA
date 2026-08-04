@@ -141,7 +141,18 @@ class AnalyticsService:
                 "vision_wards_bought": m.vision_wards_bought,
                 "vision_score_advantage": m.vision_score_advantage,
                 "support_cs_alert": m.support_cs_alert,
-                "situational_analysis_json": m.situational_analysis_json
+                "situational_analysis_json": m.situational_analysis_json,
+                "save_ally_from_death": m.save_ally_from_death,
+                "epic_monster_steals": m.epic_monster_steals,
+                "outnumbered_kills": m.outnumbered_kills,
+                "skillshots_dodged": m.skillshots_dodged,
+                "max_cs_advantage_on_lane_opponent": m.max_cs_advantage_on_lane_opponent,
+                "lane_minions_first_10_minutes": m.lane_minions_first_10_minutes,
+                "max_level_lead_lane_opponent": m.max_level_lead_lane_opponent,
+                "kills_near_enemy_turret": m.kills_near_enemy_turret,
+                "epic_monster_kills_near_enemy_jungler": m.epic_monster_kills_near_enemy_jungler,
+                "scuttle_crab_kills": m.scuttle_crab_kills,
+                "ward_takedowns_before_20m": m.ward_takedowns_before_20m
             } for m in recent_metrics
         ]
 

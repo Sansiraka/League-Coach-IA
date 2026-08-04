@@ -7,6 +7,8 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 ### 🚀 Añadido (Added)
 - **Extracción de Fortalezas (Highlights & Benchmarks):** El `PriorityEngine` ahora identifica y recompensa matemáticamente logros destacables del jugador (ej. robos épicos, aliados salvados, outplays, esquives de skillshots).
 - **Inyección de `top_strengths` a Groq:** El LLM ahora recibe un Top 3 de los mejores aciertos del jugador para generar retroalimentación positiva precisa basada en datos reales (eliminando alucinaciones sobre el desempeño positivo).
+- **Evaluación Táctica y Macro Estratégica:** Se incorporaron perfiles avanzados evaluando las últimas partidas (`Lane Tyrant`, `Macro God`, `Vision Control`, `Jungle Mastery`) para brindar feedback sobre la toma de decisiones y no solo las mecánicas puras.
+- **Bugfix (Analytics Service):** Solucionada una falla crítica en la inyección de las variables maestras y eventos (outplays, dodges, ventaja de nivel) hacia el Motor de Prioridades, lo que antes causaba que no se detectaran fortalezas de las partidas procesadas.
 
 ## [1.0.0] - 2026-08-03
 
