@@ -1,5 +1,5 @@
 // Vista principal del asistente IA
-import { AlertCircle, BrainCircuit, Target, Lightbulb, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, BrainCircuit, Target, Lightbulb, CheckCircle2, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAiAnalysis } from '../hooks/useAiAnalysis';
 
