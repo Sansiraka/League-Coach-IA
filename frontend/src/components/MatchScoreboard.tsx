@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getMatchDetails } from '../services/api';
 import type { MatchScoreboardData, ParticipantData } from '../types/api';
 import { useTranslation } from 'react-i18next';
-import { Target, Sword, Shield, Activity, Flame } from 'lucide-react';
+import { Target, Sword, Activity, Flame } from 'lucide-react';
 
 interface MatchScoreboardProps {
   matchId: string;
