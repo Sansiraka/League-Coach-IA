@@ -1,10 +1,16 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import traceback
+import os
 from api.routes import sync, analytics, coaching
 from db.database import engine, Base
 from contextlib import asynccontextmanager
+
+# Orígenes permitidos desde variable de entorno o fallback a desarrollo local
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173"
+).split(",")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,15 +27,16 @@ app = FastAPI(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    # No exponer detalles internos en producción
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal Server Error", "traceback": traceback.format_exc()}
+        content={"detail": "Internal Server Error"}
     )
 
-# CORS configuration
+# Configuración CORS dinámica según entorno
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción restringir a localhost:5173 o dominio real
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
